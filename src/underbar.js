@@ -98,8 +98,25 @@
 
   };
 
-  // Produce a duplicate-free version of the array.
+  //Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
+    var arrayCopy = array.slice(); 
+    var uniques = [];
+    var object = {};
+    if (iterator === undefined) {
+      iterator = _.identity
+    }
+    _.each(arrayCopy, item => {
+      var changed = iterator(item);
+      if (object[changed] === undefined) {
+        object[changed] = item;
+       }
+    });
+
+    for (var key in object) {
+      uniques.push(object[key])
+    }
+    return uniques
   };
 
 
