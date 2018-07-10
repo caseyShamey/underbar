@@ -311,6 +311,16 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var cache = {};
+    
+    return function() {
+      var key = JSON.stringify(arguments);
+      if (cache[key]) {
+        return cache[key];
+      } else
+      cache[key] = func.apply(this, arguments);
+      return cache[key];
+    }
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -320,6 +330,12 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var args = [];
+    for (var i = 2; i < arguments.length; i++) {
+      args.push(arguments[i]);
+    }
+    
+    return setTimeout(function() {func.apply(this, args)}, wait) 
   };
 
 
@@ -334,6 +350,34 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var arr = array.slice();
+    var indices = [];
+    var randomIndices = [];
+    _.each(arr, (item, index) => {
+      indices.push(index);
+    })
+
+    do {
+    var num = getRandomIntInclusive(arr[0], arr[arr.length - 1]);
+    if (!_.contains(randomIndices, num)) {
+      randomIndices.push(num)
+    }
+    }
+    while (randomIndices.length < indices.length);
+    
+    _.each(randomIndices, item => {
+      item = arr[item];
+    });
+
+    return randomIndices;
+
+
+    function getRandomIntInclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;  
+    };
+    
   };
 
 
